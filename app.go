@@ -31,6 +31,10 @@ func New() *Swift {
 	}
 }
 
+func (r *Swift) Handle(path string, handler http.Handler) {
+	r.serverMux.Handle(path, handler)
+}
+
 func (r *Swift) Get(path string, handler Handler) *HandlerValue {
 	p := BuildAndValidatePath(path)
 	return r.MakeHandler(http.MethodGet, p, handler, nil)
