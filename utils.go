@@ -13,7 +13,7 @@ func Prepend[T any](slice []T, elems ...T) []T {
 func BuildAndValidatePath(path string) string {
 	p := normalizePath(path)
 
-	if !validPath(p) {
+	if !validPath(p) && path != "/" {
 		panic(fmt.Sprintf("Invalid Path: '%s' - Original Path: '%s'", p, path))
 	}
 
