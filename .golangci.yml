@@ -1,0 +1,42 @@
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+  goconst:
+    min-len: 2
+    min-occurrences: 3
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - experimental
+      - opinionated
+      - performance
+      - style
+  govet:
+    enable:
+      - fieldalignment
+  nolintlint:
+    require-explanation: true
+    require-specific: true
+
+linters:
+  disable-all: true
+  enable:
+    - gosimple
+    - unused
+    - errcheck
+    - govet
+    - gocritic
+    - ineffassign
+    - staticcheck
+    - typecheck
+    - gocyclo
+    - goconst
+    - gofumpt
+    - unparam
+    - unconvert
+    - bodyclose
+    - err113
+    - sqlclosecheck
+
+run:
+  issues-exit-code: 1
