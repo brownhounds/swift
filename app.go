@@ -17,6 +17,11 @@ type Swift struct {
 	server      http.Server
 }
 
+type TLS struct {
+	certificate string
+	key         string
+}
+
 func New() *Swift {
 	return &Swift{
 		serverMux:   http.NewServeMux(),
@@ -82,6 +87,13 @@ func (r *Swift) OApiSchema(path string) {
 	BuiltInMiddlewares = append(BuiltInMiddlewares, ValidateOApiSchemaMiddleware)
 }
 
+func (r *Swift) AddTLS(crt, key string) {
+	r.context.tls = &TLS{
+		certificate: crt,
+		key:         key,
+	}
+}
+
 func (r *Swift) Serve(host, port string) {
 	Boot(r)
 
@@ -94,7 +106,13 @@ func (r *Swift) Serve(host, port string) {
 
 	log.Printf("Listening on: %s:%s", host, port)
 
-	if err := r.server.ListenAndServe(); err != nil {
-		panic(err.Error())
+	if r.context.tls != nil {
+		if err := r.server.ListenAndServeTLS(r.context.tls.certificate, r.context.tls.key); err != nil {
+			panic(err)
+		}
+	} else {
+		if err := r.server.ListenAndServe(); err != nil {
+			panic(err)
+		}
 	}
 }

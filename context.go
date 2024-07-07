@@ -11,6 +11,7 @@ type Context struct {
 	methodNotAllowed    func(w http.ResponseWriter)
 	internalServerError func(w http.ResponseWriter)
 	schema              *libopenapi.Document
+	tls                 *TLS
 }
 
 var ContextValue = Context{
@@ -18,6 +19,7 @@ var ContextValue = Context{
 	methodNotAllowed:    nil,
 	internalServerError: nil,
 	schema:              nil,
+	tls:                 nil,
 }
 
 func GetContext() *Context {
