@@ -6,3 +6,6 @@ fix:
 
 install-hooks:
 	@pre-commit install
+
+dev-version:
+	@./scripts/dev-version.sh
