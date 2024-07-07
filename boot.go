@@ -5,9 +5,18 @@ import (
 )
 
 func Boot(r *Swift) {
+	initializeSwaggerServer(r)
 	initializeNotFoundHandler(r)
 	initializeHandlers(r)
 	initializeMethodNotAllowedHandlers(r)
+}
+
+func initializeSwaggerServer(r *Swift) {
+	if r.context.swagger.serve {
+		path := r.context.swagger.path
+		fileServer := http.FileServer(http.Dir("./" + r.context.swagger.staticDir + "/"))
+		r.serverMux.Handle(path, http.StripPrefix(path, fileServer))
+	}
 }
 
 func initializeNotFoundHandler(r *Swift) {

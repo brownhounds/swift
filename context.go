@@ -12,6 +12,7 @@ type Context struct {
 	internalServerError func(w http.ResponseWriter)
 	schema              *libopenapi.Document
 	tls                 *TLS
+	swagger             *SwaggerServer
 }
 
 var ContextValue = Context{
@@ -20,6 +21,7 @@ var ContextValue = Context{
 	internalServerError: nil,
 	schema:              nil,
 	tls:                 nil,
+	swagger:             nil,
 }
 
 func GetContext() *Context {
