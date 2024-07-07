@@ -76,8 +76,8 @@ func (r *Swift) Middleware(m ...Middleware) {
 	r.middlewares = append(r.middlewares, m...)
 }
 
-func (r *Swift) OApiSchema(path string) {
-	schema, err := os.ReadFile(path)
+func (r *Swift) OApiValidator(pathToSchema string) {
+	schema, err := os.ReadFile(pathToSchema)
 	if err != nil {
 		panic(err.Error())
 	}

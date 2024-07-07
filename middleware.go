@@ -54,6 +54,12 @@ func RecoverMiddleware(next http.Handler) http.Handler {
 func ValidateOApiSchemaMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := GetContext()
+
+		if ctx.swagger != nil && strings.HasPrefix(r.URL.Path, ctx.swagger.path) {
+			next.ServeHTTP(w, r)
+			return
+		}
+
 		highLevelValidator, validatorErrs := validator.NewValidator(*ctx.schema)
 		if len(validatorErrs) > 0 {
 			panic(validatorErrs[0])
