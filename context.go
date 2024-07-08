@@ -13,6 +13,7 @@ type Context struct {
 	schema              *libopenapi.Document
 	tls                 *TLS
 	swagger             *SwaggerServer
+	onBoot              func()
 }
 
 var ContextValue = Context{
@@ -22,6 +23,7 @@ var ContextValue = Context{
 	schema:              nil,
 	tls:                 nil,
 	swagger:             nil,
+	onBoot:              nil,
 }
 
 func GetContext() *Context {

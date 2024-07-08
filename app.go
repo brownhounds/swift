@@ -104,8 +104,16 @@ func (r *Swift) AddTLS(crt, key string) {
 	}
 }
 
+func (r *Swift) OnBoot(f func()) {
+	r.context.onBoot = f
+}
+
 func (r *Swift) Serve(host, port string) {
 	Boot(r)
+
+	if r.context.onBoot != nil {
+		r.context.onBoot()
+	}
 
 	r.server = http.Server{
 		Addr: fmt.Sprintf("%s:%s", host, port),
