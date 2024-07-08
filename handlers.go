@@ -3,7 +3,7 @@ package swift
 import (
 	"net/http"
 
-	"github.com/brownhounds/swift/response"
+	res "github.com/brownhounds/swift/response"
 )
 
 type Handler func(http.ResponseWriter, *http.Request)
@@ -38,7 +38,7 @@ func MethodNotAllowedHandler(w http.ResponseWriter, r *http.Request) {
 	if ctx.methodNotAllowed != nil {
 		ctx.methodNotAllowed(w)
 	} else {
-		ApiError(w, http.StatusMethodNotAllowed)
+		res.ApiError(w, http.StatusMethodNotAllowed)
 	}
 }
 
@@ -48,12 +48,12 @@ func NotFoundHandler(w http.ResponseWriter, r *http.Request) {
 	if ctx.notFound != nil {
 		ctx.notFound(w)
 	} else {
-		ApiError(w, http.StatusNotFound)
+		res.ApiError(w, http.StatusNotFound)
 	}
 }
 
 func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
-	response.Json(w, http.StatusOK, response.Map{
+	res.Json(w, http.StatusOK, res.Map{
 		"status": "OK",
 	})
 }

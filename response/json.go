@@ -15,3 +15,10 @@ func Json(w http.ResponseWriter, status int, data interface{}) {
 		panic(err)
 	}
 }
+
+func ApiError(w http.ResponseWriter, s int) {
+	Json(w, s, Map{
+		"status":  s,
+		"message": http.StatusText(s),
+	})
+}

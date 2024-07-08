@@ -42,7 +42,7 @@ func RecoverMiddleware(next http.Handler) http.Handler {
 				if ctx.internalServerError != nil {
 					ctx.internalServerError(w)
 				} else {
-					ApiError(w, http.StatusInternalServerError)
+					res.ApiError(w, http.StatusInternalServerError)
 				}
 			}
 		}()
@@ -75,7 +75,7 @@ func ValidateOApiSchemaMiddleware(next http.Handler) http.Handler {
 		if !requestValid {
 			for _, v := range validationErrors {
 				if strings.HasSuffix(v.Message, "not found") {
-					ApiError(w, http.StatusNotFound)
+					res.ApiError(w, http.StatusNotFound)
 					break
 				}
 
