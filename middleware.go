@@ -60,6 +60,11 @@ func ValidateOApiSchemaMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
+		if r.URL.Path == "/health" {
+			next.ServeHTTP(w, r)
+			return
+		}
+
 		highLevelValidator, validatorErrs := validator.NewValidator(*ctx.schema)
 		if len(validatorErrs) > 0 {
 			panic(validatorErrs[0])

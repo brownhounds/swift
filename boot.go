@@ -5,10 +5,15 @@ import (
 )
 
 func Boot(r *Swift) {
+	initializeHealthCheck(r)
 	initializeSwaggerServer(r)
 	initializeNotFoundHandler(r)
 	initializeHandlers(r)
 	initializeMethodNotAllowedHandlers(r)
+}
+
+func initializeHealthCheck(r *Swift) {
+	r.serverMux.HandleFunc("GET /health", HealthCheckHandler)
 }
 
 func initializeSwaggerServer(r *Swift) {

@@ -2,6 +2,8 @@ package swift
 
 import (
 	"net/http"
+
+	"github.com/brownhounds/swift/response"
 )
 
 type Handler func(http.ResponseWriter, *http.Request)
@@ -48,4 +50,10 @@ func NotFoundHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		ApiError(w, http.StatusNotFound)
 	}
+}
+
+func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
+	response.Json(w, http.StatusOK, response.Map{
+		"status": "OK",
+	})
 }
