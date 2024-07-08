@@ -12,6 +12,6 @@ func Json(w http.ResponseWriter, status int, data interface{}) {
 	w.WriteHeader(status)
 
 	if err := json.NewEncoder(w).Encode(data); err != nil {
-		panic(err.Error())
+		panic(err)
 	}
 }

@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path"
 
 	"github.com/pb33f/libopenapi"
 )
@@ -31,32 +32,32 @@ func New() *Swift {
 	}
 }
 
-func (r *Swift) Handle(path string, handler http.Handler) {
-	r.serverMux.Handle(path, handler)
+func (r *Swift) Handle(pth string, handler http.Handler) {
+	r.serverMux.Handle(pth, handler)
 }
 
-func (r *Swift) Get(path string, handler Handler) *HandlerValue {
-	p := BuildAndValidatePath(path)
+func (r *Swift) Get(pth string, handler Handler) *HandlerValue {
+	p := BuildAndValidatePath(pth)
 	return r.MakeHandler(http.MethodGet, p, handler, nil)
 }
 
-func (r *Swift) Post(path string, handler Handler) *HandlerValue {
-	p := BuildAndValidatePath(path)
+func (r *Swift) Post(pth string, handler Handler) *HandlerValue {
+	p := BuildAndValidatePath(pth)
 	return r.MakeHandler(http.MethodPost, p, handler, nil)
 }
 
-func (r *Swift) Put(path string, handler Handler) *HandlerValue {
-	p := BuildAndValidatePath(path)
+func (r *Swift) Put(pth string, handler Handler) *HandlerValue {
+	p := BuildAndValidatePath(pth)
 	return r.MakeHandler(http.MethodPut, p, handler, nil)
 }
 
-func (r *Swift) Patch(path string, handler Handler) *HandlerValue {
-	p := BuildAndValidatePath(path)
+func (r *Swift) Patch(pth string, handler Handler) *HandlerValue {
+	p := BuildAndValidatePath(pth)
 	return r.MakeHandler(http.MethodPatch, p, handler, nil)
 }
 
-func (r *Swift) Delete(path string, handler Handler) *HandlerValue {
-	p := BuildAndValidatePath(path)
+func (r *Swift) Delete(pth string, handler Handler) *HandlerValue {
+	p := BuildAndValidatePath(pth)
 	return r.MakeHandler(http.MethodDelete, p, handler, nil)
 }
 
@@ -77,9 +78,14 @@ func (r *Swift) Middleware(m ...Middleware) {
 }
 
 func (r *Swift) OApiValidator(pathToSchema string) {
-	schema, err := os.ReadFile(pathToSchema)
+	dir, err := os.Getwd()
 	if err != nil {
-		panic(err.Error())
+		panic(err)
+	}
+
+	schema, err := os.ReadFile(path.Join(dir, pathToSchema))
+	if err != nil {
+		panic(err)
 	}
 
 	document, err := libopenapi.NewDocument(schema)
