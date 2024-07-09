@@ -17,7 +17,7 @@ func initializeHealthCheck(r *Swift) {
 }
 
 func initializeSwaggerServer(r *Swift) {
-	if r.context.swagger.serve {
+	if r.context.swagger != nil && r.context.swagger.serve {
 		path := r.context.swagger.path
 		fileServer := http.FileServer(http.Dir("./" + r.context.swagger.staticDir + "/"))
 		r.serverMux.Handle(path, http.StripPrefix(path, fileServer))
