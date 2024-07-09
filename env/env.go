@@ -3,6 +3,8 @@ package env
 import (
 	"fmt"
 	"os"
+	"strconv"
+	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -14,6 +16,30 @@ func Init() {
 func InitWithMandatoryVariables(mandatoryVariables []string) {
 	godotenv.Load() //nolint
 	validateEnvVariables(mandatoryVariables)
+}
+
+func Env(v string) string {
+	return os.Getenv(v)
+}
+
+func EnvInt(v string) int {
+	val, err := strconv.Atoi(os.Getenv(v))
+	if err != nil {
+		panic(err)
+	}
+	return val
+}
+
+func EnvTimeDuration(v string) time.Duration {
+	return time.Duration(EnvInt(v))
+}
+
+func EnvBool(v string) bool {
+	val, err := strconv.ParseBool(os.Getenv(v))
+	if err != nil {
+		panic(err)
+	}
+	return val
 }
 
 func validateEnvVariables(envVars []string) {
