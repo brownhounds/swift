@@ -8,21 +8,23 @@ import (
 
 type Context struct {
 	notFound            func(w http.ResponseWriter)
-	methodNotAllowed    func(w http.ResponseWriter)
 	internalServerError func(w http.ResponseWriter)
 	schema              *libopenapi.Document
 	tls                 *TLS
 	swagger             *SwaggerServer
+	staticServer        *StaticServer
 	onBoot              func()
+	apiPrefix           string
 }
 
 var ContextValue = Context{
+	apiPrefix:           "",
 	notFound:            nil,
-	methodNotAllowed:    nil,
 	internalServerError: nil,
 	schema:              nil,
 	tls:                 nil,
 	swagger:             nil,
+	staticServer:        nil,
 	onBoot:              nil,
 }
 

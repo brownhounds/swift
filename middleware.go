@@ -6,7 +6,7 @@ import (
 	"runtime/debug"
 	"strings"
 
-	res "github.com/brownhounds/swift/response"
+	"github.com/brownhounds/swift/res"
 
 	validator "github.com/pb33f/libopenapi-validator"
 )
@@ -55,14 +55,19 @@ func ValidateOApiSchemaMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := GetContext()
 
-		if ctx.swagger != nil && strings.HasPrefix(r.URL.Path, ctx.swagger.path) {
+		if ctx.apiPrefix != "" && !strings.HasPrefix(r.URL.Path, ctx.apiPrefix) {
 			next.ServeHTTP(w, r)
 			return
-		}
+		} else {
+			if ctx.swagger != nil && strings.HasPrefix(r.URL.Path, ctx.swagger.path) {
+				next.ServeHTTP(w, r)
+				return
+			}
 
-		if r.URL.Path == "/health" {
-			next.ServeHTTP(w, r)
-			return
+			if r.URL.Path == "/health" {
+				next.ServeHTTP(w, r)
+				return
+			}
 		}
 
 		highLevelValidator, validatorErrs := validator.NewValidator(*ctx.schema)
@@ -75,7 +80,7 @@ func ValidateOApiSchemaMiddleware(next http.Handler) http.Handler {
 		if !requestValid {
 			for _, v := range validationErrors {
 				if strings.HasSuffix(v.Message, "not found") {
-					res.ApiError(w, http.StatusNotFound)
+					NotFoundHandler(w, r)
 					break
 				}
 

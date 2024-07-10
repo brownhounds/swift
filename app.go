@@ -36,27 +36,27 @@ func (r *Swift) Handle(pth string, handler http.Handler) {
 	r.serverMux.Handle(pth, handler)
 }
 
-func (r *Swift) Get(pth string, handler Handler) *HandlerValue {
+func (r *Swift) Get(pth string, handler http.HandlerFunc) *HandlerValue {
 	p := BuildAndValidatePath(pth)
 	return r.MakeHandler(http.MethodGet, p, handler, nil)
 }
 
-func (r *Swift) Post(pth string, handler Handler) *HandlerValue {
+func (r *Swift) Post(pth string, handler http.HandlerFunc) *HandlerValue {
 	p := BuildAndValidatePath(pth)
 	return r.MakeHandler(http.MethodPost, p, handler, nil)
 }
 
-func (r *Swift) Put(pth string, handler Handler) *HandlerValue {
+func (r *Swift) Put(pth string, handler http.HandlerFunc) *HandlerValue {
 	p := BuildAndValidatePath(pth)
 	return r.MakeHandler(http.MethodPut, p, handler, nil)
 }
 
-func (r *Swift) Patch(pth string, handler Handler) *HandlerValue {
+func (r *Swift) Patch(pth string, handler http.HandlerFunc) *HandlerValue {
 	p := BuildAndValidatePath(pth)
 	return r.MakeHandler(http.MethodPatch, p, handler, nil)
 }
 
-func (r *Swift) Delete(pth string, handler Handler) *HandlerValue {
+func (r *Swift) Delete(pth string, handler http.HandlerFunc) *HandlerValue {
 	p := BuildAndValidatePath(pth)
 	return r.MakeHandler(http.MethodDelete, p, handler, nil)
 }
@@ -67,10 +67,6 @@ func (r *Swift) Custom404(c func(w http.ResponseWriter)) {
 
 func (r *Swift) Custom500(c func(w http.ResponseWriter)) {
 	r.context.internalServerError = c
-}
-
-func (r *Swift) Custom405(c func(w http.ResponseWriter)) {
-	r.context.methodNotAllowed = c
 }
 
 func (r *Swift) Middleware(m ...Middleware) {
@@ -95,6 +91,15 @@ func (r *Swift) OApiValidator(pathToSchema string) {
 
 	r.context.schema = &document
 	BuiltInMiddlewares = append(BuiltInMiddlewares, ValidateOApiSchemaMiddleware)
+}
+
+func (r *Swift) SetApiPrefix(prefix string) {
+	p := BuildAndValidatePath(prefix)
+	r.context.apiPrefix = p
+}
+
+func (r *Swift) ApiPrefix() *Group {
+	return r.Group(r.context.apiPrefix)
 }
 
 func (r *Swift) AddTLS(crt, key string) {

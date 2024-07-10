@@ -6,3 +6,9 @@ repos:
         entry: make lint
         language: system
         types: [text]
+
+      - id: changeloglint
+        name: changeloglint
+        entry: make changelog-lint
+        language: system
+        types: [text]

@@ -31,27 +31,27 @@ func (g *Group) Middleware(m ...Middleware) *Group {
 	return g
 }
 
-func (g *Group) Get(path string, handler Handler) *HandlerValue {
+func (g *Group) Get(path string, handler http.HandlerFunc) *HandlerValue {
 	p := BuildAndValidatePath(path)
 	return g.swift.MakeHandler(http.MethodGet, g.path+p, handler, g)
 }
 
-func (g *Group) Post(path string, handler Handler) *HandlerValue {
+func (g *Group) Post(path string, handler http.HandlerFunc) *HandlerValue {
 	p := BuildAndValidatePath(path)
 	return g.swift.MakeHandler(http.MethodPost, g.path+p, handler, nil)
 }
 
-func (g *Group) Put(path string, handler Handler) *HandlerValue {
+func (g *Group) Put(path string, handler http.HandlerFunc) *HandlerValue {
 	p := BuildAndValidatePath(path)
 	return g.swift.MakeHandler(http.MethodPut, g.path+p, handler, nil)
 }
 
-func (g *Group) Patch(path string, handler Handler) *HandlerValue {
+func (g *Group) Patch(path string, handler http.HandlerFunc) *HandlerValue {
 	p := BuildAndValidatePath(path)
 	return g.swift.MakeHandler(http.MethodPatch, g.path+p, handler, nil)
 }
 
-func (g *Group) Delete(path string, handler Handler) *HandlerValue {
+func (g *Group) Delete(path string, handler http.HandlerFunc) *HandlerValue {
 	p := BuildAndValidatePath(path)
 	return g.swift.MakeHandler(http.MethodDelete, g.path+p, handler, nil)
 }

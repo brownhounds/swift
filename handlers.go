@@ -3,15 +3,13 @@ package swift
 import (
 	"net/http"
 
-	res "github.com/brownhounds/swift/response"
+	"github.com/brownhounds/swift/res"
 )
-
-type Handler func(http.ResponseWriter, *http.Request)
 
 type HandlerValue struct {
 	method      string
 	path        string
-	handler     Handler
+	handler     http.HandlerFunc
 	group       *Group
 	middlewares []Middleware
 }
@@ -20,7 +18,7 @@ func (h *HandlerValue) Middleware(m ...Middleware) {
 	h.middlewares = append(h.middlewares, m...)
 }
 
-func (r *Swift) MakeHandler(m, path string, handler Handler, group *Group) *HandlerValue {
+func (r *Swift) MakeHandler(m, path string, handler http.HandlerFunc, group *Group) *HandlerValue {
 	value := &HandlerValue{
 		method:      m,
 		path:        path,
@@ -30,16 +28,6 @@ func (r *Swift) MakeHandler(m, path string, handler Handler, group *Group) *Hand
 	}
 	r.handlers[m+" "+path] = value
 	return value
-}
-
-func MethodNotAllowedHandler(w http.ResponseWriter, r *http.Request) {
-	ctx := GetContext()
-
-	if ctx.methodNotAllowed != nil {
-		ctx.methodNotAllowed(w)
-	} else {
-		res.ApiError(w, http.StatusMethodNotAllowed)
-	}
 }
 
 func NotFoundHandler(w http.ResponseWriter, r *http.Request) {

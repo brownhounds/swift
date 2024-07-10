@@ -1,4 +1,4 @@
-name: Go Build Release
+name: Build Release
 
 on:
   push:
@@ -6,18 +6,37 @@ on:
       - "*"
 
 jobs:
-  build:
+  lint:
+    name: lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: v1.59
+
+      - name: Install Changelog Lint
+        run: make install-changelog-lint
+
+      - name: Changelog Lint
+        run: make changelog-lint
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [lint]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract release notes
+        id: extract-release-notes
+        uses: ffurrer2/extract-release-notes@v2
+
+      - name: Create release
         env:
           GITHUB_TOKEN: ${{ secrets.SWIFT_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
+        run: gh release create ${{ github.ref_name }} --title ${{ github.ref_name }} --notes '${{ steps.extract-release-notes.outputs.release_notes }}'
