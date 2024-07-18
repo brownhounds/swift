@@ -9,6 +9,7 @@ import (
 type Context struct {
 	notFound            func(w http.ResponseWriter)
 	internalServerError func(w http.ResponseWriter)
+	cors                func(next http.Handler) http.Handler
 	schema              *libopenapi.Document
 	tls                 *TLS
 	swagger             *SwaggerServer
@@ -26,6 +27,7 @@ var ContextValue = Context{
 	swagger:             nil,
 	staticServer:        nil,
 	onBoot:              nil,
+	cors:                nil,
 }
 
 func GetContext() *Context {

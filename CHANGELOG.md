@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.2.2] - 2024-07-18
+
+### Added
+
+- Ability to add `CORS Middleware` with `AddCorsMiddleware` method.
+
+### Changed
+
+- Open Api schema middleware now will return `401` status code when making a request with missing `bearer token`.
+
 ## [0.2.1] - 2024-07-18
 
 ### Added

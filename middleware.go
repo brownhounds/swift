@@ -84,6 +84,11 @@ func ValidateOApiSchemaMiddleware(next http.Handler) http.Handler {
 					break
 				}
 
+				if v.Reason == "Authorization header was not found" {
+					res.ApiError(w, http.StatusUnauthorized)
+					break
+				}
+
 				res.Json(w, http.StatusBadRequest, res.Map{
 					"status":  http.StatusBadRequest,
 					"message": http.StatusText(http.StatusBadRequest),

@@ -113,6 +113,10 @@ func (r *Swift) OnBoot(f func()) {
 	r.context.onBoot = f
 }
 
+func (r *Swift) AddCorsMiddleware(f func(next http.Handler) http.Handler) {
+	r.context.cors = f
+}
+
 func (r *Swift) Serve(host, port string) {
 	Boot(r)
 
@@ -120,11 +124,14 @@ func (r *Swift) Serve(host, port string) {
 		r.context.onBoot()
 	}
 
+	handler := MakeMiddlewareStack(r.serverMux, Prepend(r.middlewares, BuiltInMiddlewares...))
+	if r.context.cors != nil {
+		handler = r.context.cors(handler)
+	}
+
 	r.server = http.Server{
-		Addr: fmt.Sprintf("%s:%s", host, port),
-		Handler: MakeMiddlewareStack(
-			r.serverMux,
-			Prepend(r.middlewares, BuiltInMiddlewares...)),
+		Addr:    fmt.Sprintf("%s:%s", host, port),
+		Handler: handler,
 	}
 
 	log.Printf("Listening on: %s:%s", host, port)
