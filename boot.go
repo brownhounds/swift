@@ -2,7 +2,10 @@ package swift
 
 import (
 	"errors"
+	"log"
 	"net/http"
+	"net/http/httputil"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -10,9 +13,13 @@ import (
 	"github.com/brownhounds/swift/res"
 )
 
+const (
+	DEV_FRONTEND_PROXY = "DEV_FRONTEND_PROXY"
+)
+
 func Boot(r *Swift) {
 	initializeHealthCheck(r)
-	initializeStaticServer(r)
+	initializeRootStaticServer(r)
 	initializeSwaggerServer(r)
 	initializeNotFoundHandler(r)
 	initializeHandlers(r)
@@ -30,7 +37,26 @@ func initializeSwaggerServer(r *Swift) {
 	}
 }
 
-func initializeStaticServer(r *Swift) {
+func initializeRootStaticServer(r *Swift) {
+	_, defined := os.LookupEnv(DEV_FRONTEND_PROXY)
+	if defined {
+		remote, err := url.Parse(os.Getenv(DEV_FRONTEND_PROXY))
+		if err != nil {
+			panic(err)
+		}
+		handler := func(p *httputil.ReverseProxy) func(http.ResponseWriter, *http.Request) {
+			return func(w http.ResponseWriter, r *http.Request) {
+				log.Printf("DEV Proxy: %s", r.URL)
+				r.Host = remote.Host
+				p.ServeHTTP(w, r)
+			}
+		}
+
+		proxy := httputil.NewSingleHostReverseProxy(remote)
+		r.serverMux.HandleFunc("GET /", handler(proxy))
+		return
+	}
+
 	if r.context.staticServer != nil {
 		path := r.context.staticServer.path
 		staticDir := "./" + r.context.staticServer.staticDir + "/"

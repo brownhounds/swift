@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.1] - 2024-07-18
+
+### Added
+
+- **Development Proxy for Frontend Apps**: Introduced the `DEV_FRONTEND_PROXY` environment variable. When this variable is set, it will overwrite the `RootStaticServer` configuration.
+
 ## [0.2.0] - 2024-07-15
 
 ### Added
