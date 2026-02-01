@@ -1,5 +1,5 @@
 lint:
-	@golangci-lint run --fast
+	@golangci-lint run
 
 changelog-lint:
 	@changelog-lint
@@ -15,6 +15,9 @@ install-changelog-lint:
 
 dev-version:
 	@./scripts/dev-version.sh
+
+test:
+	@go test -v
 
 git-tag:
 	git tag --sign v$(v) -m v$(v)

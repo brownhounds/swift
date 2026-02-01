@@ -16,15 +16,18 @@ jobs:
           go-version: stable
 
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v6
+        uses: golangci/golangci-lint-action@v9
         with:
-          version: v1.59
+          version: v2.8
 
       - name: Install Changelog Lint
         run: make install-changelog-lint
 
       - name: Changelog Lint
         run: make changelog-lint
+
+      - name: Tests
+        run: make test
 
   build:
     runs-on: ubuntu-latest

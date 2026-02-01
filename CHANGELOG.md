@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.2.3] - 2025-02-01
+
+### Changed
+
+- Updated golangci-lint configuration
+
+### Fixed
+
+- Issue with nested routes and middlewares
+
+
 ## [0.2.2] - 2024-07-18
 
 ### Added

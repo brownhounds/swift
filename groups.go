@@ -19,10 +19,12 @@ func (r *Swift) Group(path string) *Group {
 
 func (g *Group) Group(path string) *Group {
 	p := BuildAndValidatePath(path)
+	middlewares := make([]Middleware, len(g.middlewares))
+	copy(middlewares, g.middlewares)
 	return &Group{
 		swift:       g.swift,
 		path:        g.path + p,
-		middlewares: g.middlewares,
+		middlewares: middlewares,
 	}
 }
 
@@ -38,20 +40,20 @@ func (g *Group) Get(path string, handler http.HandlerFunc) *HandlerValue {
 
 func (g *Group) Post(path string, handler http.HandlerFunc) *HandlerValue {
 	p := BuildAndValidatePath(path)
-	return g.swift.MakeHandler(http.MethodPost, g.path+p, handler, nil)
+	return g.swift.MakeHandler(http.MethodPost, g.path+p, handler, g)
 }
 
 func (g *Group) Put(path string, handler http.HandlerFunc) *HandlerValue {
 	p := BuildAndValidatePath(path)
-	return g.swift.MakeHandler(http.MethodPut, g.path+p, handler, nil)
+	return g.swift.MakeHandler(http.MethodPut, g.path+p, handler, g)
 }
 
 func (g *Group) Patch(path string, handler http.HandlerFunc) *HandlerValue {
 	p := BuildAndValidatePath(path)
-	return g.swift.MakeHandler(http.MethodPatch, g.path+p, handler, nil)
+	return g.swift.MakeHandler(http.MethodPatch, g.path+p, handler, g)
 }
 
 func (g *Group) Delete(path string, handler http.HandlerFunc) *HandlerValue {
 	p := BuildAndValidatePath(path)
-	return g.swift.MakeHandler(http.MethodDelete, g.path+p, handler, nil)
+	return g.swift.MakeHandler(http.MethodDelete, g.path+p, handler, g)
 }
